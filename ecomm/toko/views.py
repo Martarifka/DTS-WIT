@@ -8,13 +8,43 @@ from django.views import generic
 from paypal.standard.forms import PayPalPaymentsForm
 
 
-from .forms import CheckoutForm
+from .forms import *
 from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Payment
 
 class HomeListView(generic.ListView):
     template_name = 'home.html'
     queryset = ProdukItem.objects.all()
     paginate_by = 4
+    template_name = 'home.html'
+    paginate_by = 4
+    model = ProdukItem
+
+    def get_queryset(self):
+        query = self.request.POST.get('search')
+        if query:
+            queryset = ProdukItem.objects.filter(nama_produk__contains=query)
+        else:
+            queryset = ProdukItem.objects.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object_list = self.get_queryset()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 
 class ProductDetailView(generic.DetailView):
     template_name = 'product_detail.html'
