@@ -14,10 +14,7 @@ from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Paymen
 class HomeListView(generic.ListView):
     template_name = 'home.html'
     queryset = ProdukItem.objects.all()
-    paginate_by = 4
-    template_name = 'home.html'
-    paginate_by = 4
-    model = ProdukItem
+    paginate_by = 25
 
     def get_queryset(self):
         query = self.request.POST.get('search')
