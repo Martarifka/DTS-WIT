@@ -7,13 +7,14 @@ from django.utils import timezone
 from django.views import generic
 from paypal.standard.forms import PayPalPaymentsForm
 
-
 from .forms import *
 from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Payment
 
 class HomeListView(generic.ListView):
     template_name = 'home.html'
     queryset = ProdukItem.objects.all()
+    # def cari(request):
+    #     if
     paginate_by = 25
 
     def get_queryset(self):
