@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils import timezone
 from django.views import generic
 from paypal.standard.forms import PayPalPaymentsForm
+from django.http import HttpResponse
 
 from .forms import *
 from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Payment
@@ -13,43 +14,32 @@ from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Paymen
 class HomeListView(generic.ListView):
     template_name = 'home.html'
     model = ProdukItem
-    object_list = ProdukItem.objects.all()
-    form = SearchForm()
-    object_list = ProdukItem.objects.all()
-    def get_queryset(self,  *args, **kwargs):  
-        form = SearchForm(self.request.GET or None)
-        if self.request.method == 'GET':
-            print('taat')
-            query = self.request.GET.get("q")
-            object_list = ProdukItem.objects.filter(nama_produk__contains='test')
-            context = {
-                'form': form,
-                'object_list': object_list,
-            }
-            print(**kwargs)
-        else:
-            object_list = ProdukItem.objects.all()
-            print('haha')
-        return context
-    def post(self, *args, **kwargs):
-        if self.request.method == 'POST':
-            form = SearchForm(self.request.POST or None)
-            if form.is_valid():
-                print('form is valid')
-                print(form.cleaned_data)
-                print(form.cleaned_data.get('search'))
-                print(form.cleaned_data['search'])
-            context = {
-                'form': form,
-            }
-            template_name = 'home.html'
-            return render(self.request, template_name, context)
-    context = {
-        'form': form,
-        'object_list': object_list,
-    }
-    template_name = 'home.html'
+    queryset = ProdukItem.objects.all()
 
+    def get_queryset(self):
+        search_term = self.request.GET.get('q')
+        if search_term:
+            queryset = ProdukItem.objects.filter(name__icontains=search_term)
+        else:
+            queryset = super().get_queryset()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = SearchForm(request.POST or None)
+        if form.is_valid():
+            print('form is valid')
+            print(form.cleaned_data)
+            print(form.cleaned_data.get('search_term'))
+        context = {
+            'form': form,
+        }
+        template_name = 'home.html'
+        return render(request, template_name, context)
 
 class ProductDetailView(generic.DetailView):
     template_name = 'product_detail.html'

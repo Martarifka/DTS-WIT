@@ -35,9 +35,11 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <!-- Link -->
             <li class="nav-item acitve">
-              <form action="/" method="get">
-                <input type="checkbox" name="q" id="q" value="q">chk
-              </form>
+              <!-- <form method="GET" action="">
+                {% csrf_token %}
+                {{ object_list.form.search.term }}
+                <button type="submit">Search</button>
+              </form> -->
             </li>
           </ul>
 
@@ -45,7 +47,7 @@
           <form class="w-auto py-1" style="max-width: 12rem" method="POST">
             {% csrf_token %}
             <!-- {{ form }} -->
-            {{ object_list.form }}
+            {{ form }}
           </form>
         </div>
       </div>
@@ -54,7 +56,7 @@
     <!-- Navbar -->
 
     <!-- Products -->
-    {{ object_list.object_list }}
+    {{ object_list }}
     
     <!-- End Products -->
 
