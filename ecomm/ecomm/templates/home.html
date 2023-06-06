@@ -1,4 +1,8 @@
-{% extends 'base.html' %} {% block content %} {% include 'carousel.html' %}
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %} 
+{% include 'carousel.html' %}
 
 <!--Main layout-->
 <main>
@@ -31,27 +35,17 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <!-- Link -->
             <li class="nav-item acitve">
-              <a class="nav-link text-white" href="#">All</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">Shirts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">Sport wears</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">Outwears</a>
+              <form action="/" method="get">
+                <input type="checkbox" name="q" id="q" value="q">chk
+              </form>
             </li>
           </ul>
 
           <!-- Search -->
-          <form class="w-auto py-1" style="max-width: 12rem">
-            <input
-              type="search"
-              class="form-control rounded-0"
-              placeholder="Search"
-              aria-label="Search"
-            />
+          <form class="w-auto py-1" style="max-width: 12rem" method="POST">
+            {% csrf_token %}
+            <!-- {{ form }} -->
+            {{ object_list.form }}
           </form>
         </div>
       </div>
@@ -60,58 +54,8 @@
     <!-- Navbar -->
 
     <!-- Products -->
-    <section>
-      <div class="text-center">
-        <div class="row">
-          {% for pItem in object_list %}
-          <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card width: 10rem;">
-              <div
-                class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                data-mdb-ripple-color="light"
-              >
-                <img src="{{ pItem.gambar.url }}" class="card-img-top" style="height:10rem;"/>
-                <a href="{{ pItem.get_absolute_url }}">
-                  <div class="mask">
-                    <div
-                      class="d-flex justify-content-start align-items-end h-100"
-                    >
-                      <h5>
-                        <span
-                          class="badge bg-{{ pItem.get_label_display }} ms-2"
-                          >{{ pItem.label|truncatechars:80 }}</span
-                        >
-                      </h5>
-                    </div>
-                  </div>
-                  <div class="hover-overlay">
-                    <div
-                      class="mask"
-                      style="background-color: rgba(251, 251, 251, 0.15)"
-                    ></div>
-                  </div>
-                </a>
-              </div>
-              <div class="card-body">
-                <a href="{{ pItem.get_absolute_url }}" class="text-reset">
-                  <h5 class="card-title mb-2">{{ pItem.nama_produk|truncatechars:80 }}</h5>
-                </a>
-                <a href="" class="text-reset">
-                  <p>{{ pItem.get_kategori_display }}</p>
-                </a>
-                <h6 class="mb-3 price">
-                  ${% if pItem.harga_diskon %}{{ pItem.harga_diskon }}
-                  {% else %}{{ pItem.harga }}{% endif %}
-                </h6>
-              </div>
-            </div>
-          </div>
-          {% empty %}
-          <p>Data Produk belum tersedia</p>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
+    {{ object_list.object_list }}
+    
     <!-- End Products -->
 
     <!-- Pagination -->

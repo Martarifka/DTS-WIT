@@ -12,37 +12,44 @@ from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Paymen
 
 class HomeListView(generic.ListView):
     template_name = 'home.html'
-    queryset = ProdukItem.objects.all()
-    # def cari(request):
-    #     if
-    paginate_by = 25
-
-    def get_queryset(self):
-        query = self.request.POST.get('search')
-        if query:
-            queryset = ProdukItem.objects.filter(nama_produk__contains=query)
+    model = ProdukItem
+    object_list = ProdukItem.objects.all()
+    form = SearchForm()
+    object_list = ProdukItem.objects.all()
+    def get_queryset(self,  *args, **kwargs):  
+        form = SearchForm(self.request.GET or None)
+        if self.request.method == 'GET':
+            print('taat')
+            query = self.request.GET.get("q")
+            object_list = ProdukItem.objects.filter(nama_produk__contains='test')
+            context = {
+                'form': form,
+                'object_list': object_list,
+            }
+            print(**kwargs)
         else:
-            queryset = ProdukItem.objects.all()
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = SearchForm()
+            object_list = ProdukItem.objects.all()
+            print('haha')
         return context
+    def post(self, *args, **kwargs):
+        if self.request.method == 'POST':
+            form = SearchForm(self.request.POST or None)
+            if form.is_valid():
+                print('form is valid')
+                print(form.cleaned_data)
+                print(form.cleaned_data.get('search'))
+                print(form.cleaned_data['search'])
+            context = {
+                'form': form,
+            }
+            template_name = 'home.html'
+            return render(self.request, template_name, context)
+    context = {
+        'form': form,
+        'object_list': object_list,
+    }
+    template_name = 'home.html'
 
-    def post(self, request, *args, **kwargs):
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def form_valid(self, form):
-        self.object_list = self.get_queryset()
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
 
 class ProductDetailView(generic.DetailView):
     template_name = 'product_detail.html'

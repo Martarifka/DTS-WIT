@@ -33,20 +33,23 @@
     {% include 'navbar.html' %}
  
 
-    <div class="mt-5 pt-4">
-      {% if messages %}
-          {% for message in messages %}
+    {% if messages %}
+      <div class="mt-3">
+        {% for message in messages %}
           <div class="container">
             <div class="alert alert-{{ message.tags }} alert-dismissable">
               <strong>{{ message }}</strong>
             </div>
           </div>
-          {% endfor %}
-      {% endif %}
-    </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-    {% block content %}
-    {% endblock content %}
+    <main class="mt-2 mb-10">
+      {% block content %}
+      {% endblock content %}
+    </main>
+
     
     {% include 'footer.html' %}
   
