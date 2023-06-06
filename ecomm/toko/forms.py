@@ -16,4 +16,4 @@ class CheckoutForm(forms.Form):
     opsi_pembayaran = forms.ChoiceField(widget=forms.RadioSelect(), choices=PILIHAN_PEMBAYARAN)
 
 class SearchForm(forms.Form):
-    search = forms.CharField(label='search')
+    search = forms.CharField(label='search', required=False)

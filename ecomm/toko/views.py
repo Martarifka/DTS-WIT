@@ -18,6 +18,7 @@ class HomeListView(generic.ListView):
 
     def get_queryset(self):
         search_term = self.request.GET.get('q')
+        print(search_term)
         if search_term:
             queryset = ProdukItem.objects.filter(name__icontains=search_term)
         else:
@@ -32,14 +33,16 @@ class HomeListView(generic.ListView):
     def post(self, request, *args, **kwargs):
         form = SearchForm(request.POST or None)
         if form.is_valid():
-            print('form is valid')
-            print(form.cleaned_data)
-            print(form.cleaned_data.get('search_term'))
+            search_value = form.cleaned_data.get('search')
+            queryset = ProdukItem.objects.filter(nama_produk__contains=search_value)
+        else:
+            queryset = ProdukItem.objects.all()
         context = {
+            'object_list': queryset,
             'form': form,
         }
-        template_name = 'home.html'
-        return render(request, template_name, context)
+        return render(request, 'home.html', context)
+
 
 class ProductDetailView(generic.DetailView):
     template_name = 'product_detail.html'
